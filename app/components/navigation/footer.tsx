@@ -32,7 +32,7 @@ export default function Footer() {
     return () => unsubscribe();
   }, []);
 
-  const LOGO_WHITE = "https://disruptivesolutionsinc.com/wp-content/uploads/2025/08/DISRUPTIVE-LOGO-white-scaled.png";
+  const LOGO_WHITE = "/images/disruptive.png";
   
   const socials = [
     { name: "Facebook", icon: Facebook, href: "#", color: "hover:bg-[#1877F2]" },

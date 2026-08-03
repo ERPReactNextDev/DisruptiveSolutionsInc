@@ -160,10 +160,8 @@ export default function DisruptiveLandingPage() {
     return () => unsubscribe();
   }, []);
 
-  const LOGO_RED =
-    "https://disruptivesolutionsinc.com/wp-content/uploads/2025/08/DISRUPTIVE-LOGO-red-scaled.png";
-  const LOGO_WHITE =
-    "https://disruptivesolutionsinc.com/wp-content/uploads/2025/08/DISRUPTIVE-LOGO-white-scaled.png";
+  const LOGO_RED = "images/disruptive.png";
+  const LOGO_WHITE = "images/disruptive.png";
 
   const navLinks = [
     { name: "Home", href: "/dashboard" },

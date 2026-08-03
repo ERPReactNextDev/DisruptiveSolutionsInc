@@ -21,10 +21,8 @@ export default function BrandsPage() {
   const [loading, setLoading] = useState(true);
   const [isNavOpen, setIsNavOpen] = useState(false);
 
-  const LOGO_RED =
-    "https://disruptivesolutionsinc.com/wp-content/uploads/2025/08/DISRUPTIVE-LOGO-red-scaled.png";
-  const LOGO_WHITE =
-    "https://disruptivesolutionsinc.com/wp-content/uploads/2025/08/DISRUPTIVE-LOGO-white-scaled.png";
+  const LOGO_RED = "/disruptive.png";
+  const LOGO_WHITE = "/disruptive.png";
 
   const navLinks = [
     { name: "Home", href: "/dashboard" },
