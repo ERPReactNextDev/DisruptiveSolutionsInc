@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
@@ -15,6 +16,7 @@ import {
 import Navbar from "@/app/components/navigation/navbar";
 import Footer from "@/app/components/navigation/footer";
 import FloatingMenuWidget from "@/app/components/menu-widget";
+import QuoteCartPanel from "@/app/components/QuoteCartPanel";
 import {
   ArrowLeft,
   Plus,
@@ -23,9 +25,6 @@ import {
   Search,
   X,
   Star,
-  Minus,
-  Trash2,
-  ShoppingBag,
   ChevronRight,
   Filter,
   SlidersHorizontal,
@@ -49,7 +48,6 @@ export default function ProductFamilyPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [quoteCart, setQuoteCart] = useState<any[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const [sortBy, setSortBy] = useState<"default" | "name" | "sku">("default");
 
   // Sync cart
@@ -127,25 +125,7 @@ export default function ProductFamilyPage() {
       const updated = [...currentCart, { ...product, quantity: 1 }];
       localStorage.setItem("disruptive_quote_cart", JSON.stringify(updated));
       window.dispatchEvent(new Event("cartUpdated"));
-      setIsCartOpen(true);
     }
-  };
-
-  const updateQuantity = (id: string, delta: number) => {
-    const updated = quoteCart.map((item) =>
-      item.id === id
-        ? { ...item, quantity: Math.max(1, (item.quantity || 1) + delta) }
-        : item,
-    );
-    setQuoteCart(updated);
-    localStorage.setItem("disruptive_quote_cart", JSON.stringify(updated));
-  };
-
-  const removeFromQuote = (id: string) => {
-    const updated = quoteCart.filter((i) => i.id !== id);
-    setQuoteCart(updated);
-    localStorage.setItem("disruptive_quote_cart", JSON.stringify(updated));
-    window.dispatchEvent(new Event("cartUpdated"));
   };
 
   // Filter + sort
@@ -210,7 +190,7 @@ export default function ProductFamilyPage() {
         {/* Background image */}
         {family.imageUrl && (
           <div className="absolute inset-0">
-            <img
+            <SmartImage
               src={family.imageUrl}
               alt={family.title}
               className="w-full h-full object-cover opacity-40"
@@ -389,10 +369,10 @@ export default function ProductFamilyPage() {
                   {/* Image zone */}
                   <Link href={`/brand-lit/${product.slug || product.id}`}>
                     <div className="relative h-56 md:h-64 bg-[#fafafa] flex items-center justify-center overflow-hidden p-6">
-                      <img
+                      <SmartImage
                         src={
-                          family.imageUrl ||
                           product.mainImage ||
+                          family.imageUrl ||
                           "/placeholder.svg"
                         }
                         alt={product.name}
@@ -495,112 +475,7 @@ export default function ProductFamilyPage() {
 
       <Footer />
 
-      {/* ── CART DRAWER ────────────────────────────────────────── */}
-      <AnimatePresence>
-        {isCartOpen && (
-          <div className="fixed inset-0 z-[2000]">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setIsCartOpen(false)}
-            />
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl flex flex-col"
-            >
-              <div className="p-6 border-b flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-black uppercase italic">
-                    Quote List
-                  </h2>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
-                    {quoteCart.length} items
-                  </p>
-                </div>
-                <button
-                  onClick={() => setIsCartOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full"
-                >
-                  <X size={18} />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {quoteCart.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-center">
-                    <ShoppingBag size={40} className="text-gray-200 mb-3" />
-                    <p className="text-[10px] font-black uppercase text-gray-300 tracking-widest">
-                      Your list is empty
-                    </p>
-                  </div>
-                ) : (
-                  quoteCart.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex gap-4 p-4 bg-gray-50 rounded-2xl items-center"
-                    >
-                      <img
-                        src={item.mainImage || "/placeholder.svg"}
-                        className="w-14 h-14 object-contain bg-white rounded-xl p-2 flex-shrink-0"
-                        alt={item.name}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[10px] font-black uppercase italic truncate">
-                          {item.name}
-                        </p>
-                        <div className="flex items-center gap-3 mt-2">
-                          <div className="flex items-center gap-2 bg-white border border-gray-100 rounded-lg p-1">
-                            <button
-                              onClick={() => updateQuantity(item.id, -1)}
-                              className="w-6 h-6 flex items-center justify-center hover:text-[#d11a2a]"
-                            >
-                              <Minus size={10} />
-                            </button>
-                            <span className="text-xs font-black w-4 text-center">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() => updateQuantity(item.id, 1)}
-                              className="w-6 h-6 flex items-center justify-center hover:text-[#d11a2a]"
-                            >
-                              <Plus size={10} />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => removeFromQuote(item.id)}
-                        className="text-gray-300 hover:text-red-500 transition-colors flex-shrink-0"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              <div className="p-6 border-t">
-                <Link
-                  href="/checkout"
-                  onClick={() => setIsCartOpen(false)}
-                  className={`block w-full py-5 text-center rounded-2xl font-black uppercase text-[11px] tracking-widest transition-all ${
-                    quoteCart.length === 0
-                      ? "bg-gray-100 text-gray-300 pointer-events-none"
-                      : "bg-[#d11a2a] text-white hover:bg-black"
-                  }`}
-                >
-                  Confirm & Request Quote
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <QuoteCartPanel />
     </div>
   );
 }

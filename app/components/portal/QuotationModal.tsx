@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Star, CheckCircle2, MessageSquare, Send, Loader2 } from "lucide-react";
 import { db } from "@/lib/firebase";
@@ -120,7 +121,7 @@ export default function QuotationModal({ isOpen, onClose, inquiry, userData, ema
                                             {/* Left: Product Info */}
                                             <div className="w-full md:w-32 flex-shrink-0 text-center md:text-left">
                                                 <div className="aspect-square bg-white rounded-2xl p-2 relative overflow-hidden shadow-xl mx-auto md:mx-0">
-                                                    <img src={item.image} className="object-contain w-full h-full" alt={item.name} />
+                                                    <SmartImage src={item.image} className="object-contain w-full h-full" alt={item.name} />
                                                     {isAlreadyReviewed && (
                                                         <div className="absolute inset-0 bg-green-600/90 backdrop-blur-sm flex items-center justify-center">
                                                             <CheckCircle2 size={30} className="text-white" />

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { db } from "@/lib/firebase";
 import { 
@@ -86,7 +87,7 @@ export default function ApplicationList({ filteredProducts, addToQuote, quoteCar
                                 {/* LARGER APPLICATION IMAGE CONTAINER */}
                                 <div className="w-28 h-18 md:w-48 md:h-28 bg-white shrink-0 overflow-hidden rounded-2xl border border-gray-100 shadow-sm relative transition-all group-hover:border-[#d11a2a]/30">
                                     {app.imageUrl ? (
-                                        <img
+                                        <SmartImage
                                             src={app.imageUrl}
                                             alt={app.title}
                                             className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
@@ -139,7 +140,7 @@ export default function ApplicationList({ filteredProducts, addToQuote, quoteCar
                                                         <Link href={`/lighting-products-smart-solutions/${product.id}`}>
                                                             {/* LARGER PRODUCT IMAGE CONTAINER */}
                                                             <div className="relative h-60 sm:h-72 md:h-80 w-full bg-white p-6 flex items-center justify-center overflow-hidden">
-                                                                <img 
+                                                                <SmartImage 
                                                                     src={product.mainImage} 
                                                                     className="max-w-[95%] max-h-[95%] object-contain group-hover/card:scale-110 group-hover/card:blur-[2px] transition-all duration-700" 
                                                                     alt={product.name} 

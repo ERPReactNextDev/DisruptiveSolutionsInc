@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link"; 
 import { motion, AnimatePresence } from "framer-motion"; 
 import { ArrowRight, Loader2, ChevronUp, Facebook, Instagram, Linkedin, Bookmark, Calendar } from "lucide-react"; 
 import { auth, db } from "@/lib/firebase"; 
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, orderBy, onSnapshot, limit, where, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, orderBy, onSnapshot, where, addDoc, serverTimestamp } from "firebase/firestore";
 import SignUpNewsletter from "../components/SignUpNewsletter";    
 import Footer from "../components/navigation/footer";
 import Navbar from "../components/navigation/navbar";
@@ -47,24 +48,22 @@ export default function BlogPage() {
 
 // FETCH REAL BLOGS FROM FIREBASE (Published Only)
     useEffect(() => {
+        // Using two where clauses + orderBy requires a Firestore composite index.
+        // To avoid index issues, we filter status client-side.
         const q = query(
             collection(db, "blogs"), 
             where("website", "==", "disruptivesolutionsinc"),
-            // Idagdag ang linyang ito para ma-filter ang drafts
-            where("status", "==", "Published"), 
-            orderBy("createdAt", "desc"), 
-            limit(6)
+            orderBy("createdAt", "desc")
         );
         
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const fetchedBlogs = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            const fetchedBlogs = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                .filter((blog: any) => blog.status === "Published")
+                .slice(0, 6);
             setBlogs(fetchedBlogs);
             setLoading(false);
         }, (error) => {
-            // Babala: Kung lumabas ang "Index" error sa console, i-click ang link na ibibigay ng Firebase.
             console.error("Error fetching blogs:", error);
             setLoading(false);
         });
@@ -92,7 +91,7 @@ export default function BlogPage() {
             <section className="relative pt-48 pb-32 px-6 overflow-hidden bg-[#0a0a0a]">
                 {/* Visual Background Elements */}
                 <div className="absolute inset-0 z-0">
-                    <img 
+                    <SmartImage 
                         src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" 
                         alt="Background" 
                         className="w-full h-full object-cover opacity-20"
@@ -152,7 +151,7 @@ export default function BlogPage() {
                         {/* IMAGE CONTAINER */}
                         <div className="relative h-64 bg-gray-50 overflow-hidden flex items-center justify-center p-4">
                             {blog.coverImage ? (
-                                <img 
+                                <SmartImage 
                                     src={blog.coverImage} 
                                     alt={blog.title} 
                                     className="w-full h-full object-contain" 

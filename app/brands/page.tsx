@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
@@ -21,8 +22,8 @@ export default function BrandsPage() {
   const [loading, setLoading] = useState(true);
   const [isNavOpen, setIsNavOpen] = useState(false);
 
-  const LOGO_RED = "/disruptive.png";
-  const LOGO_WHITE = "/disruptive.png";
+  const LOGO_RED = "/images/disruptive.png";
+  const LOGO_WHITE = "/images/disruptive.png";
 
   const navLinks = [
     { name: "Home", href: "/dashboard" },
@@ -69,7 +70,7 @@ export default function BrandsPage() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* LOGO */}
           <Link href="/dashboard">
-            <img
+            <SmartImage
               src={isScrolled ? LOGO_RED : LOGO_WHITE}
               alt="Disruptive Solutions"
               className="h-8 w-auto transition-all duration-300"
@@ -208,7 +209,7 @@ export default function BrandsPage() {
                 >
                   {/* Background Image */}
                   {product.imageUrl && (
-                    <img
+                    <SmartImage
                       src={product.imageUrl}
                       alt={product.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import {
@@ -579,14 +580,14 @@ const handlePublish = async () => {
                 {/* Existing Images */}
                 {existingGalleryImages.map((url, index) => (
                   <div key={`ex-${index}`} className="relative border-2 border-slate-200 rounded-lg p-1 bg-white h-32 group overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                    <img src={url || "/placeholder.svg"} alt={`Gallery ${index}`} className="object-contain h-full w-full rounded" />
+                    <SmartImage src={url || "/placeholder.svg"} alt={`Gallery ${index}`} className="object-contain h-full w-full rounded" />
                     <button onClick={() => setExistingGalleryImages(prev => prev.filter((_, i) => i !== index))} className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full p-1.5 text-white shadow-lg hover:scale-110 transition-transform"><X size={14} /></button>
                   </div>
                 ))}
                 {/* New Image Previews */}
                 {galleryImages.map((img, index) => (
                   <div key={`new-${index}`} className="relative border-2 border-blue-300 rounded-lg p-1 bg-blue-50 h-32 group overflow-hidden shadow-sm">
-                    <img src={URL.createObjectURL(img) || "/placeholder.svg"} alt={`New gallery ${index}`} className="object-contain h-full w-full rounded" />
+                    <SmartImage src={URL.createObjectURL(img) || "/placeholder.svg"} alt={`New gallery ${index}`} className="object-contain h-full w-full rounded" />
                     <button onClick={() => setGalleryImages(prev => prev.filter((_, i) => i !== index))} className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 rounded-full p-1.5 text-white shadow-lg hover:scale-110 transition-transform"><X size={14} /></button>
                   </div>
                 ))}
@@ -605,7 +606,7 @@ const handlePublish = async () => {
     {/* Existing QR Images (Mula sa Database) */}
     {existingQrProducts.map((url: string, index: number) => (
       <div key={`ex-qr-${index}`} className="relative border-2 border-slate-200 rounded-lg p-1 bg-white h-32 group overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-        <img src={url || "/placeholder.svg"} className="object-contain h-full w-full rounded" alt="QR Product" />
+        <SmartImage src={url || "/placeholder.svg"} className="object-contain h-full w-full rounded" alt="QR Product" />
         <button 
           type="button"
           onClick={() => setExistingQrProducts((prev: string[]) => prev.filter((_, i) => i !== index))} 
@@ -619,7 +620,7 @@ const handlePublish = async () => {
     {/* New QR Image Previews (Yung kakapili lang sa Folder) */}
     {qrProducts.map((img: File, index: number) => (
       <div key={`new-qr-${index}`} className="relative border-2 border-emerald-300 rounded-lg p-1 bg-emerald-50 h-32 overflow-hidden shadow-sm">
-        <img src={URL.createObjectURL(img) || "/placeholder.svg"} className="object-contain h-full w-full rounded" alt="New QR Preview" />
+        <SmartImage src={URL.createObjectURL(img) || "/placeholder.svg"} className="object-contain h-full w-full rounded" alt="New QR Preview" />
         <button 
           type="button"
           onClick={() => setQrProducts((prev: File[]) => prev.filter((_, i) => i !== index))} 
@@ -752,7 +753,7 @@ const handlePublish = async () => {
       <div className={`p-4 bg-white border border-slate-200 rounded-xl shadow-sm transition-all duration-300 ${previewMode === 'mobile' ? 'max-w-[360px]' : 'max-w-[600px]'}`}>
         <div className="flex items-center gap-2 mb-1">
           <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center border border-slate-100">
-            <img src="/favicon.ico" className="w-3 h-3 grayscale opacity-50" alt="icon" />
+            <SmartImage src="/favicon.ico" className="w-3 h-3 grayscale opacity-50" alt="icon" />
           </div>
           <div className="overflow-hidden">
             <p className="text-[12px] text-[#202124] leading-tight font-medium">Disruptive Solutions Inc</p>
@@ -784,7 +785,7 @@ const handlePublish = async () => {
     className="w-[104px] h-[104px] flex-shrink-0 bg-slate-50 rounded-lg overflow-hidden border border-slate-100 relative group block"
   >
     {mainImage || existingMainImage ? (
-      <img 
+      <SmartImage 
         src={mainImage ? URL.createObjectURL(mainImage) : existingMainImage} 
         className="w-full h-full object-contain p-1" 
         alt="SEO Thumb" 
@@ -817,7 +818,7 @@ const handlePublish = async () => {
           <CardContent className="pt-8 pb-6">
             <Label htmlFor="main-file" className="cursor-pointer block group">
               <div className="aspect-square border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center hover:bg-blue-50 hover:border-blue-400 transition-all overflow-hidden bg-white group-hover:ring-2 group-hover:ring-blue-200">
-                {mainImage ? <img src={URL.createObjectURL(mainImage) || "/placeholder.svg"} alt="Main" className="w-full h-full object-contain p-3" /> : existingMainImage ? <img src={existingMainImage || "/placeholder.svg"} alt="Main" className="w-full h-full object-contain p-3" /> : <div className="text-center"><ImagePlus className="w-14 h-14 mb-3 text-blue-400 mx-auto opacity-40 group-hover:scale-110 transition-transform" /><span className="text-xs font-bold uppercase text-slate-500 block">Click to Upload</span></div>}
+                {mainImage ? <SmartImage src={URL.createObjectURL(mainImage) || "/placeholder.svg"} alt="Main" className="w-full h-full object-contain p-3" /> : existingMainImage ? <SmartImage src={existingMainImage || "/placeholder.svg"} alt="Main" className="w-full h-full object-contain p-3" /> : <div className="text-center"><ImagePlus className="w-14 h-14 mb-3 text-blue-400 mx-auto opacity-40 group-hover:scale-110 transition-transform" /><span className="text-xs font-bold uppercase text-slate-500 block">Click to Upload</span></div>}
               </div>
               <input type="file" id="main-file" className="hidden" onChange={(e) => setMainImage(e.target.files?.[0] || null)} />
             </Label>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
@@ -133,7 +134,7 @@ export default function LitRedBlackPage() {
                   quoteCart.map((item) => (
                     <div key={item.id} className="flex gap-5 group border-b border-gray-100 pb-6 last:border-none">
                       <div className="w-24 h-24 bg-gray-50 border-2 border-gray-100 p-2 group-hover:border-[#d11a2a] transition-all">
-                        <img src={item.mainImage} alt={item.name} className="w-full h-full object-contain" />
+                        <SmartImage src={item.mainImage} alt={item.name} className="w-full h-full object-contain" />
                       </div>
                       <div className="flex-grow flex flex-col justify-center">
                         <h4 className="text-[13px] font-black uppercase leading-none tracking-tighter">{item.name}</h4>
@@ -236,7 +237,7 @@ export default function LitRedBlackPage() {
                   >
                     <div className="relative aspect-square border-2 border-gray-100 group-hover:border-[#d11a2a] transition-all duration-300 overflow-hidden bg-white">
                       <div className="absolute inset-0 p-8 flex items-center justify-center">
-                        <img src={product.mainImage || "/placeholder.jpg"} alt={product.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                        <SmartImage src={product.mainImage || "/placeholder.jpg"} alt={product.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                       </div>
                       <Link href={`/lighting-products-smart-solutions/${product.id}`} className="absolute inset-0 z-10" />
                       <button 

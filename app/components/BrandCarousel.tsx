@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { SmartImage } from "@/components/ui/smart-image";
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
@@ -82,7 +83,7 @@ export default function BrandCarousel({ brands }: BrandCarouselProps) {
         >
           {/* Brand Image Background */}
           <div className="absolute inset-0">
-            <img
+            <SmartImage
               src={currentBrand.image}
               alt={currentBrand.title}
               className="w-full h-full object-cover brightness-[0.4]"

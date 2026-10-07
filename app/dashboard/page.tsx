@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useCallback, useId, useRef } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import {
   collection,
@@ -18,7 +19,7 @@ import { motion, AnimatePresence, type Variants } from "framer-motion";
 import SignUpNewsletter from "../components/SignUpNewsletter";
 import Footer from "../components/navigation/footer";
 import Navbar from "../components/navigation/navbar";
-import BrandCarousel from "../components/BrandCarousel"; // 🔥 NEW IMPORT!
+import BrandCarousel from "../components/BrandCarousel"; // ðŸ”¥ NEW IMPORT!
 import {
   Menu,
   X,
@@ -58,7 +59,7 @@ const Avatar = ({ children, className }: any) => (
   </div>
 );
 const AvatarImage = ({ src }: any) => (
-  <img src={src} className="aspect-square h-full w-full" />
+  <SmartImage src={src} alt="Product image" className="aspect-square h-full w-full" />
 );
 const AvatarFallback = ({ children, className }: any) => (
   <div
@@ -388,10 +389,10 @@ export default function DisruptiveLandingPage() {
       <div className="min-h-screen bg-[#f8f9fa] font-sans selection:bg-[#d11a2a]/10 selection:text-[#d11a2a] overflow-x-hidden">
         <Navbar />
 
-        {/* 🔥 HERO SECTION WITH BRAND CAROUSEL */}
+        {/* ðŸ”¥ HERO SECTION WITH BRAND CAROUSEL */}
         <section className="relative min-h-[112vh] flex items-center bg-[#0a0a0a] overflow-hidden pt-1">
           <div className="absolute inset-0 z-0">
-            <img
+            <SmartImage
               src="https://disruptivesolutionsinc.com/wp-content/uploads/2025/09/HOME-PAGE-HERO.png"
               alt="Engineering Background"
               className="w-full h-full object-cover opacity-40 grayscale-[10%]"
@@ -440,7 +441,7 @@ export default function DisruptiveLandingPage() {
                 </div>
               </motion.div>
 
-              {/* 🔥 RIGHT SIDE - BRAND CAROUSEL */}
+              {/* ðŸ”¥ RIGHT SIDE - BRAND CAROUSEL */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, x: 30 }}
                 animate={{ opacity: 1, scale: 1, x: 0 }}
@@ -517,7 +518,7 @@ export default function DisruptiveLandingPage() {
                       }`}
                     >
                       <div className="absolute inset-0 overflow-hidden">
-                        <img
+                        <SmartImage
                           src={brand.image}
                           alt={brand.title}
                           className={`w-full h-full object-cover transition-all duration-700 ${
@@ -616,7 +617,7 @@ export default function DisruptiveLandingPage() {
                       className="mx-3 md:mx-4 flex items-center justify-center shrink-0"
                     >
                       <div className="relative h-28 w-48 md:h-44 md:w-80 bg-white rounded-[24px] flex items-center justify-center p-2 group border-[3px] border-gray-100 hover:border-[#d11a2a] shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:shadow-[0_30px_60px_rgba(209,26,42,0.15)] overflow-hidden">
-                        <img
+                        <SmartImage
                           src={logo}
                           alt="Partner Brand"
                           className="h-[90%] w-[90%] object-contain mix-blend-multiply opacity-100 group-hover:scale-125"
@@ -675,7 +676,7 @@ export default function DisruptiveLandingPage() {
                     {/* Wrap the entire card in a Link component */}
                     <Link href="/projects" className="block w-full">
                       <div className="group relative h-[220px] md:h-[400px] block rounded-[32px] overflow-hidden bg-gray-900 shadow-xl border border-gray-100 cursor-pointer">
-                        <img
+                        <SmartImage
                           src={project.imageUrl}
                           alt={project.title}
                           className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-500"
@@ -692,7 +693,7 @@ export default function DisruptiveLandingPage() {
                               className="relative"
                             >
                               <div className="absolute inset-0 bg-white/10 blur-2xl rounded-full" />
-                              <img
+                              <SmartImage
                                 src={project.logoUrl}
                                 alt="Client Logo"
                                 className="relative w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
@@ -773,7 +774,7 @@ export default function DisruptiveLandingPage() {
                         <div className="bg-white border border-gray-100 p-2 h-full flex flex-col hover:shadow-[0_20px_50px_rgba(209,26,42,0.1)] hover:-translate-y-1">
                           <div className="relative h-56 bg-gray-50 overflow-hidden mb-6 flex items-center justify-center p-4">
                             {blog.coverImage ? (
-                              <img
+                              <SmartImage
                                 src={blog.coverImage}
                                 alt={blog.title}
                                 className="w-full h-full object-contain"
@@ -1046,3 +1047,4 @@ export default function DisruptiveLandingPage() {
     </>
   );
 }
+

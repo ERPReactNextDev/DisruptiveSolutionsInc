@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
@@ -370,7 +371,7 @@ export default function ProductDetails() {
                           : "border-transparent opacity-60 hover:opacity-100"
                       }`}
                     >
-                      <img src={img} className="w-full h-full object-cover" alt={`Thumb ${idx + 1}`} />
+                      <SmartImage src={img} className="w-full h-full object-cover" alt={`Thumb ${idx + 1}`} />
                     </button>
                   ))}
                 </div>
@@ -534,7 +535,7 @@ export default function ProductDetails() {
                         key={idx}
                         className="w-32 h-32 border border-slate-200 rounded-xl overflow-hidden bg-white p-2 shadow-sm hover:shadow-md transition-shadow"
                       >
-                        <img
+                        <SmartImage
                           src={img}
                           className="w-full h-full object-contain"
                           alt={`QR Code ${idx + 1}`}
@@ -691,7 +692,7 @@ export default function ProductDetails() {
                 {relatedProducts.map((item) => (
                   <SwiperSlide key={item.id}>
                     <Link
-                      href={`/lit/${item.slug || item.id}`}
+                      href={`/brand-lit/${item.slug || item.id}`}
                       onClick={() =>
                         logActivity(`Clicked Related Product: ${item.name}`, {
                           fromProductId: product.id,

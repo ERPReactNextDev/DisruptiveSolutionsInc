@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
@@ -139,7 +140,7 @@ export default function ZumtobelHybridPage() {
                   quoteCart.map((item) => (
                     <div key={item.id} className="flex gap-4 group">
                       <div className="w-20 h-20 bg-gray-50 border border-gray-100 flex-shrink-0 p-2">
-                        <img src={item.mainImage} alt={item.name} className="w-full h-full object-contain" />
+                        <SmartImage src={item.mainImage} alt={item.name} className="w-full h-full object-contain" />
                       </div>
                       <div className="flex-grow">
                         <h4 className="text-[11px] font-black uppercase leading-tight line-clamp-2">{item.name}</h4>
@@ -245,7 +246,7 @@ export default function ZumtobelHybridPage() {
                   >
                     <div className="relative aspect-square border border-gray-200 bg-white overflow-hidden transition-all duration-300 group-hover:border-black group-hover:shadow-xl">
                       <div className="absolute inset-0 p-8 flex items-center justify-center group-hover:opacity-10 transition-all duration-500">
-                        <img src={product.mainImage || "/placeholder.jpg"} alt={product.name} className="w-full h-full object-contain" />
+                        <SmartImage src={product.mainImage || "/placeholder.jpg"} alt={product.name} className="w-full h-full object-contain" />
                       </div>
                       
                       {/* Hover Table */}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
@@ -236,7 +237,7 @@ export default function BrandsPage() {
       {/* Hero Section */}
       <section className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
-          <img src="/images/zumtobel.png" className="w-full h-full object-cover" alt="Hero" />
+          <SmartImage src="/images/zumtobel.png" className="w-full h-full object-cover" alt="Hero" />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
       </section>
@@ -312,7 +313,7 @@ export default function BrandsPage() {
                           <button onClick={() => setOpenCategoryId(isOpen ? null : category.id)} className={`w-full flex items-start justify-between p-4 md:p-8 transition-all hover:bg-gray-50 ${isOpen ? "bg-gray-50" : ""}`}>
                             <div className="flex gap-6 md:gap-10 text-left items-center">
                               <div className="w-16 h-16 md:w-24 md:h-24 bg-white border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden rounded-xl shadow-md">
-                                {category.imageUrl ? <img src={category.imageUrl} className="w-full h-full object-cover" alt={category.title} /> : <span className="text-xs font-black text-gray-300">0{index + 1}</span>}
+                                {category.imageUrl ? <SmartImage src={category.imageUrl} className="w-full h-full object-cover" alt={category.title} /> : <span className="text-xs font-black text-gray-300">0{index + 1}</span>}
                               </div>
                               <div className="flex flex-col justify-center">
                                 <h3 className={`text-lg md:text-1xl font-black uppercase transition-colors ${isOpen ? "text-[#d11a2a]" : "text-gray-900"}`}>{category.title}</h3>
@@ -336,7 +337,7 @@ export default function BrandsPage() {
                                       <div key={product.slug} className="bg-white rounded-xl md:rounded-[24px] overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 flex flex-col group/card relative">
                                         <Link href={`/zumtobel/${product.slug}`}>
                                           <div className="relative h-64 sm:h-72 md:h-80 w-full bg-[#fcfcfc] p-2 flex items-center justify-center overflow-hidden">
-                                            <img src={product.mainImage} className="max-w-[95%] max-h-[95%] object-contain group-hover/card:scale-105 transition-all duration-700" alt={product.name} />
+                                            <SmartImage src={product.mainImage} className="max-w-[95%] max-h-[95%] object-contain group-hover/card:scale-105 transition-all duration-700" alt={product.name} />
                                             <div className="absolute top-3 left-3 bg-white/95 px-3 py-1.5 rounded-lg text-[8px] font-black uppercase border border-gray-100 z-10">{product.sku}</div>
                                           </div>
                                         </Link>
@@ -423,7 +424,7 @@ export default function BrandsPage() {
                   quoteCart.map((item) => (
                     <div key={item.id} className="flex gap-4 p-4 bg-white border border-gray-100 rounded-[28px] items-center shadow-sm">
                       <div className="w-16 h-16 bg-gray-50 p-2 rounded-xl flex items-center justify-center shrink-0">
-                        <img src={item.mainImage} className="max-h-full object-contain" alt={item.name} />
+                        <SmartImage src={item.mainImage} className="max-h-full object-contain" alt={item.name} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-[11px] font-black uppercase truncate italic">{item.name}</h4>

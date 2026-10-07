@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ShoppingBag, ChevronLeft, CheckCircle2, Loader2 } from "lucide-react";
@@ -178,7 +179,7 @@ export default function CheckoutPage() {
                 {cartItems.map((item) => (
                   <div key={item.id} className="flex gap-4 items-center">
                     <div className="w-16 h-16 bg-gray-50 rounded-xl overflow-hidden p-2 flex-shrink-0 border border-gray-50">
-                      <img src={item.mainImage} className="w-full h-full object-contain" alt={item.name} />
+                      <SmartImage src={item.mainImage} className="w-full h-full object-contain" alt={item.name} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-[11px] font-black uppercase leading-tight truncate">

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { auth, db } from "@/lib/firebase"; // Added auth for logging
@@ -79,7 +80,7 @@ export default function CareersPage() {
             <section className="relative min-h-[70vh] flex items-center pt-32 pb-16 px-5 overflow-hidden bg-black">
                 {/* Background Image with Overlay */}
                 <div className="absolute inset-0 z-0">
-                    <img 
+                    <SmartImage 
                         src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop" 
                         alt="Office Background" 
                         className="w-full h-full object-cover opacity-40 scale-105"

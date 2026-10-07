@@ -170,13 +170,25 @@ export default function ContactUsPage() {
                 fileUrl = await getDownloadURL(uploadResult.ref);
             }
 
-            await addDoc(collection(db, "inquiries"), {
+            const submissionData = {
                 ...formData,
                 attachmentUrl: fileUrl,
-                submittedAt: serverTimestamp(),
                 source: "Contact Page",
                 status: "unread",
                 type: "customer",
+            };
+
+            // 1. Save to Firestore
+            await addDoc(collection(db, "inquiries"), {
+                ...submissionData,
+                submittedAt: serverTimestamp(),
+            });
+
+            // 2. Send email via Resend
+            await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(submissionData),
             });
 
             setStatus("success");
@@ -300,7 +312,7 @@ export default function ContactUsPage() {
                                 }`}
                             >
                                 <Map center={mapView.center} zoom={mapView.zoom}>
-                                    <MapTileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+                                    <MapTileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' />
                                     <MapController center={mapView.center} zoom={mapView.zoom} />
 
                                     {/* Dynamic markers — pulled from Firestore, only addresses with coords */}

@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useEffect, useState } from "react";
 import { Pencil, X, ArrowLeft, UploadCloud, ImageIcon, Plus, Trash2 } from "lucide-react";
 
@@ -184,7 +185,7 @@ export function InventoryManager() {
     setDescBlocks(product.technicalSpecs ?? []);
     setMainImage(product.mainImage ?? null);
     
-    // 🔥 Eto yung nagf-fetch ng current values
+    // ðŸ”¥ Eto yung nagf-fetch ng current values
     setCategories(product.categories || []);
     setBrands(product.brands || []);
     setWebsites(product.websites || []);
@@ -261,7 +262,7 @@ export function InventoryManager() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-slate-200 overflow-hidden border">
-                         {p.mainImage && <img src={p.mainImage} className="w-full h-full object-cover" />}
+                         {p.mainImage && <SmartImage src={p.mainImage} alt="Product image" className="w-full h-full object-cover" />}
                       </div>
                       <span className="font-bold uppercase text-xs">{p.name}</span>
                     </div>
@@ -309,7 +310,7 @@ export function InventoryManager() {
                 <div className="grid grid-cols-4 gap-4">
                   {galleryImages.map((img, i) => (
                     <div key={i} className="aspect-square rounded-xl border-2 border-dashed overflow-hidden relative group">
-                      <img src={typeof img === 'string' ? img : URL.createObjectURL(img)} className="w-full h-full object-cover" />
+                      <SmartImage src={typeof img === 'string' ? img : URL.createObjectURL(img)} alt="Product image" className="w-full h-full object-cover" />
                       <button onClick={() => setGalleryImages(prev => prev.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition">
                         <X size={10} />
                       </button>
@@ -332,7 +333,7 @@ export function InventoryManager() {
               <CardContent>
                 <div className="aspect-square rounded-2xl border-2 border-dashed flex items-center justify-center relative bg-white overflow-hidden">
                   {mainImage ? (
-                    <img src={typeof mainImage === 'string' ? mainImage : URL.createObjectURL(mainImage)} className="w-full h-full object-contain p-2" />
+                    <SmartImage src={typeof mainImage === 'string' ? mainImage : URL.createObjectURL(mainImage)} alt="Product image" className="w-full h-full object-contain p-2" />
                   ) : (
                     <ImageIcon className="text-slate-200" size={40} />
                   )}
@@ -371,3 +372,4 @@ export function InventoryManager() {
     </div>
   );
 }
+

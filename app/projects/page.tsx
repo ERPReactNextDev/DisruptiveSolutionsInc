@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { motion, AnimatePresence } from "framer-motion";
@@ -87,7 +88,7 @@ export default function ProjectGalleryPage() {
         >
           {/* IMAGE CONTAINER */}
           <div className="relative aspect-[4/5] overflow-hidden bg-gray-50">
-            <img 
+            <SmartImage 
               src={project.imageUrl} 
               alt={project.title} 
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
@@ -96,7 +97,7 @@ export default function ProjectGalleryPage() {
             {/* HOVER OVERLAY */}
             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col items-center justify-center p-6 text-center">
               {project.logoUrl && (
-                <img 
+                <SmartImage 
                   src={project.logoUrl} 
                   className="w-32 h-24 object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] mb-4" 
                 />

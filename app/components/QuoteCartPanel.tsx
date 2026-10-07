@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
-import { ShoppingBag, X, Trash2, Plus, Minus } from "lucide-react";
+import { ShoppingBag, X, Trash2, Plus, Minus, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function QuoteCartPanel({ 
   embedded = false,
@@ -15,10 +18,42 @@ export default function QuoteCartPanel({
 }) {
   const [quoteCart, setQuoteCart] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [hydrating, setHydrating] = useState(false);
+
+  // Hydrate cart items that are missing name/mainImage by re-fetching from Firestore
+  const hydrateCart = async (cart: any[]) => {
+    const needsHydration = cart.some(
+      (item) => !item.name || (!item.mainImage && !item.imageUrl && !item.images?.length),
+    );
+    if (!needsHydration) {
+      setQuoteCart(cart);
+      return;
+    }
+
+    setHydrating(true);
+    const hydrated = await Promise.all(
+      cart.map(async (item) => {
+        if (item.name && item.mainImage) return item;
+        try {
+          const snap = await getDoc(doc(db, "products", item.id));
+          if (snap.exists()) {
+            const data = snap.data();
+            return { ...item, ...data, id: item.id, quantity: item.quantity };
+          }
+        } catch (_) {}
+        return item;
+      }),
+    );
+
+    // Persist hydrated data back to localStorage so future loads are instant
+    localStorage.setItem("disruptive_quote_cart", JSON.stringify(hydrated));
+    setQuoteCart(hydrated);
+    setHydrating(false);
+  };
 
   const refreshCart = () => {
     const cart = JSON.parse(localStorage.getItem("disruptive_quote_cart") || "[]");
-    setQuoteCart(cart);
+    hydrateCart(cart);
   };
 
   useEffect(() => {
@@ -35,6 +70,7 @@ export default function QuoteCartPanel({
       window.removeEventListener("cartUpdated", handleUpdate);
       window.removeEventListener("storage", refreshCart);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embedded]);
 
   const updateQuantity = (productId: string, delta: number) => {
@@ -52,7 +88,7 @@ export default function QuoteCartPanel({
   const removeFromQuote = (productId: string) => {
     const updated = quoteCart.filter((item: any) => item.id !== productId);
     localStorage.setItem("disruptive_quote_cart", JSON.stringify(updated));
-    refreshCart();
+    setQuoteCart(updated);
   };
 
   const totalItems = quoteCart.reduce((acc, item) => acc + (item.quantity || 1), 0);
@@ -136,31 +172,59 @@ export default function QuoteCartPanel({
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {quoteCart.length === 0 ? (
+                {hydrating ? (
+                  <div className="flex flex-col items-center justify-center py-10 gap-3">
+                    <Loader2 size={24} className="animate-spin text-[#d11a2a]" />
+                    <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400">Loading items...</p>
+                  </div>
+                ) : quoteCart.length === 0 ? (
                   <div className="text-center py-10 opacity-20">
                     <ShoppingBag className="h-12 w-12 mx-auto mb-2 text-gray-300" />
                     <p className="text-xs text-gray-400">Your quote cart is empty</p>
                   </div>
                 ) : (
                   quoteCart.map((item) => (
-                    <div key={item.id} className="flex gap-4 p-4 bg-gray-50 rounded-[20px] relative border border-transparent hover:border-gray-100 transition-all">
-                      <img src={item.mainImage} className="w-16 h-16 object-contain bg-white rounded-xl p-2" alt={item.name} />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-[10px] font-black uppercase truncate">{item.name}</h4>
-                        <p className="text-[9px] text-gray-400 font-bold uppercase mb-2">SKU: {item.sku}</p>
+                    <div key={item.id} className="flex gap-3 p-4 bg-gray-50 rounded-[20px] border border-transparent hover:border-gray-100 transition-all">
+                      {/* Fixed-size image wrapper — SmartImage needs a sized parent when using fill mode */}
+                      <div className="relative w-16 h-16 flex-shrink-0 bg-white rounded-xl overflow-hidden">
+                        <SmartImage
+                          src={
+                            item.mainImage ||
+                            item.images?.[0]?.src ||
+                            (typeof item.images?.[0] === "string" ? item.images[0] : undefined) ||
+                            item.imageUrl ||
+                            null
+                          }
+                          alt={item.name || "Product"}
+                          fill
+                          className="object-contain p-1.5"
+                        />
+                      </div>
+
+                      {/* Text content */}
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                          <h4 className="text-[10px] font-black uppercase leading-tight line-clamp-2 text-gray-900">
+                            {item.name || item.title || "—"}
+                          </h4>
+                          <p className="text-[9px] text-gray-400 font-bold uppercase mt-0.5">
+                            {item.itemCode || item.sku || ""}
+                          </p>
+                        </div>
                         
-                        <div className="flex items-center gap-3">
-                          <button onClick={() => updateQuantity(item.id, -1)} className="p-1 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
-                            <Minus size={12} />
+                        <div className="flex items-center gap-2 mt-2">
+                          <button onClick={() => updateQuantity(item.id, -1)} className="w-6 h-6 flex items-center justify-center bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
+                            <Minus size={10} />
                           </button>
-                          <span className="text-xs font-black w-4 text-center">{item.quantity || 1}</span>
-                          <button onClick={() => updateQuantity(item.id, 1)} className="p-1 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
-                            <Plus size={12} />
+                          <span className="text-xs font-black w-5 text-center">{item.quantity || 1}</span>
+                          <button onClick={() => updateQuantity(item.id, 1)} className="w-6 h-6 flex items-center justify-center bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
+                            <Plus size={10} />
                           </button>
                         </div>
                       </div>
-                      <button onClick={() => removeFromQuote(item.id)} className="text-gray-300 hover:text-red-500 transition-colors self-start">
-                        <Trash2 size={16}/>
+
+                      <button onClick={() => removeFromQuote(item.id)} className="text-gray-300 hover:text-red-500 transition-colors self-start flex-shrink-0 p-1">
+                        <Trash2 size={14}/>
                       </button>
                     </div>
                   ))

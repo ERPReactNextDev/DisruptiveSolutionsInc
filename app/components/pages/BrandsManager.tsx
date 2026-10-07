@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import { 
   collection, onSnapshot, query, orderBy, 
@@ -173,7 +174,7 @@ export default function BrandsManager() {
               <tr key={brand.id} className="hover:bg-gray-50/30 transition-colors group">
                 <td className="px-8 py-6">
                   <div className="flex items-center gap-4">
-                    <img src={brand.image} className="w-14 h-10 rounded-lg object-cover border border-gray-100 bg-gray-50" />
+                    <SmartImage src={brand.image} alt="Product image" className="w-14 h-10 rounded-lg object-cover border border-gray-100 bg-gray-50" />
                     <div className="flex flex-col">
                         <span className="font-black text-gray-900 uppercase text-[13px] tracking-tight">{brand.title}</span>
                         <span className="text-[9px] text-gray-400 font-bold uppercase flex items-center gap-1"><Globe size={8}/> {brand.website}</span>
@@ -286,7 +287,7 @@ export default function BrandsManager() {
                 <div className="space-y-4">
                   <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest">Visual Asset (Logo)</label>
                   <div className="relative aspect-[16/9] rounded-[32px] border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden group hover:border-[#d11a2a] transition-all cursor-pointer">
-                    {imagePrev ? <img src={imagePrev} className="w-full h-full object-contain p-8" alt="Preview" /> : (
+                    {imagePrev ? <SmartImage src={imagePrev} className="w-full h-full object-contain p-8" alt="Preview" /> : (
                         <div className="text-center text-gray-300">
                             <UploadCloud size={32} className="mx-auto mb-2" />
                             <span className="text-[8px] font-black uppercase block tracking-widest">Upload Logo</span>

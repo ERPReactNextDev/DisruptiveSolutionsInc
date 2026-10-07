@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Send,
@@ -228,7 +229,7 @@ const handleRequestAccess = async (e: React.FormEvent) => {
                     className="group bg-black/40 backdrop-blur-sm rounded-[24px] md:rounded-[32px] overflow-hidden border border-white/10 hover:border-[#d11a2a]/50 transition-all duration-500"
                   >
                     <div className="relative h-44 md:h-64 overflow-hidden">
-                      <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
+                      <SmartImage src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-4 md:p-8">
                         <span className="text-white/80 text-[8px] md:text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
                           <ImageIcon size={12} /> {item.category}

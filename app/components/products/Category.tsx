@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase"; 
 import { 
@@ -225,7 +226,7 @@ export default function CategoryMaintenance() {
         <div className="flex-1">
           <h1 className="text-3xl font-black uppercase italic tracking-tighter text-slate-900">Category Maintenance</h1>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-            Visibility & Classification Control • {filteredCategories.length} of {stats.total} categories
+            Visibility & Classification Control â€¢ {filteredCategories.length} of {stats.total} categories
           </p>
         </div>
       </div>
@@ -328,7 +329,7 @@ export default function CategoryMaintenance() {
           <form onSubmit={handleSubmit} className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm sticky top-6 space-y-5">
             <div className="flex items-center justify-between">
               <h2 className="text-[10px] font-black uppercase text-blue-600 tracking-widest">
-                {editId ? "✏️ Edit Category" : "✨ New Category"}
+                {editId ? "âœï¸ Edit Category" : "âœ¨ New Category"}
               </h2>
               {editId && <Button onClick={resetForm} variant="ghost" size="sm" className="h-6 text-[9px] font-black uppercase">Cancel</Button>}
             </div>
@@ -362,7 +363,7 @@ export default function CategoryMaintenance() {
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Image Preview</label>
               <div onClick={() => document.getElementById('cat-img')?.click()} className="relative w-full h-44 bg-slate-50 rounded-[24px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden cursor-pointer hover:border-blue-400 transition-all">
-                {previewUrl ? <img src={previewUrl} className="w-full h-full object-cover" /> : <div className="text-slate-300 flex flex-col items-center"><ImageIcon size={32}/><span className="text-[9px] font-black uppercase mt-2">Upload</span></div>}
+                {previewUrl ? <SmartImage src={previewUrl} alt="Product image" className="w-full h-full object-cover" /> : <div className="text-slate-300 flex flex-col items-center"><ImageIcon size={32}/><span className="text-[9px] font-black uppercase mt-2">Upload</span></div>}
                 <input type="file" id="cat-img" hidden onChange={handleImageChange} accept="image/*" />
               </div>
             </div>
@@ -390,7 +391,7 @@ export default function CategoryMaintenance() {
               {filteredCategories.map((cat) => (
                 <div key={cat.id} className={`group bg-white border border-slate-100 rounded-[32px] overflow-hidden transition-all duration-500 hover:shadow-xl ${cat.isActive === false ? 'opacity-60 grayscale-[0.5]' : ''}`}>
                   <div className="h-48 bg-slate-100 overflow-hidden relative">
-                    <img src={cat.imageUrl || "https://via.placeholder.com/400x300"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <SmartImage src={cat.imageUrl || "https://via.placeholder.com/400x300"} alt="Product image" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                     
                     {/* Status Label */}
                     <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-[8px] font-black uppercase flex items-center gap-1 shadow-lg ${cat.isActive !== false ? 'bg-green-500 text-white' : 'bg-slate-800 text-white'}`}>

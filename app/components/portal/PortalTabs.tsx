@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { motion } from "framer-motion";
 import { FileText, Package, Calendar, MapPin, Activity, Clock, Key, ChevronRight } from "lucide-react";
 
@@ -87,7 +88,7 @@ export const QuotesTab = ({ quotes, loading }: { quotes: any[], loading: boolean
                   <div className="flex -space-x-3 overflow-hidden">
                     {inquiry.items?.map((item: any, idx: number) => (
                       <div key={idx} className="w-12 h-12 rounded-xl bg-white p-1 border-2 border-[#0a0a0a] relative group/img">
-                        <img src={item.image} alt="" className="w-full h-full object-contain" />
+                        <SmartImage src={item.image} alt="" className="w-full h-full object-contain" />
                       </div>
                     ))}
                   </div>

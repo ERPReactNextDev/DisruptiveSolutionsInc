@@ -3,6 +3,7 @@
 import React from "react"
 
 import { cn } from "@/lib/utils";
+import { SmartImage } from "@/components/ui/smart-image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
@@ -343,7 +344,7 @@ export default function FloatingChatWidget({
                         msg.isAdmin ? "bg-white/10 border-white/5 text-white rounded-tl-none" : "bg-[#d11a2a] border-transparent text-white rounded-tr-none")}>
 
                         {msg.imageUrl && (
-                          <img
+                          <SmartImage
                             src={msg.imageUrl}
                             alt="Attachment"
                             className="rounded-lg mb-1.5 max-w-full h-auto cursor-pointer"

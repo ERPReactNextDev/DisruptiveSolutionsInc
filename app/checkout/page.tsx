@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { ChevronLeft, CheckCircle2, Loader2 } from "lucide-react";
@@ -45,17 +46,19 @@ export default function CheckoutPage() {
 
     setIsSubmitting(true);
     try {
+      // Strip undefined values — Firestore rejects them
+      const sanitizedItems = cartItems.map(item => ({
+        name: item.name || item.title || "",
+        sku: item.itemCode || item.sku || "",
+        quantity: item.quantity || 1,
+        image: item.mainImage || item.imageUrl || item.images?.[0]?.src || "",
+      }));
+
       // 1. SAVE TO FIREBASE
-      // Idinagdag ang 'type: "product"' para sa filtering sa admin panel
       const docRef = await addDoc(collection(db, "inquiries"), {
-        type: "product", // <--- IMPORTANT: Para sa admin panel filtering
+        type: "product",
         customerDetails: formData,
-        items: cartItems.map(item => ({
-          name: item.name,
-          sku: item.sku,
-          quantity: item.quantity || 1,
-          image: item.mainImage
-        })),
+        items: sanitizedItems,
         status: "pending",
         createdAt: serverTimestamp(),
       });
@@ -67,12 +70,7 @@ export default function CheckoutPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             customerDetails: formData,
-            items: cartItems.map(item => ({
-              name: item.name,
-              sku: item.sku,
-              quantity: item.quantity || 1,
-              image: item.mainImage
-            })),
+            items: sanitizedItems,
             inquiryId: docRef.id
           }),
         });
@@ -167,13 +165,13 @@ export default function CheckoutPage() {
                 {cartItems.map((item) => (
                   <div key={item.id} className="py-6 flex gap-6 items-center">
                     <div className="w-20 h-20 bg-gray-50 rounded-2xl p-2 flex-shrink-0 border border-gray-50">
-                      <img src={item.mainImage} className="w-full h-full object-contain" alt={item.name} />
+                      <SmartImage src={item.mainImage} className="w-full h-full object-contain" alt={item.name} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-[12px] font-black uppercase italic text-gray-900">
                         {item.name} <span className="text-[#d11a2a] ml-2 not-italic">× {item.quantity || 1}</span>
                       </h4>
-                      <p className="text-[9px] text-gray-400 font-bold uppercase mt-1 tracking-widest">SKU: {item.sku}</p>
+                      <p className="text-[9px] text-gray-400 font-bold uppercase mt-1 tracking-widest">SKU: {item.itemCode || item.sku || "—"}</p>
                     </div>
                   </div>
                 ))}

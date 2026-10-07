@@ -37,6 +37,10 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-muted: var(--brand-muted);
+  --color-ink: var(--ink);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -79,6 +83,12 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Brand palette — replaces the hardcoded #d11a2a / #0a0a0a used site-wide. */
+  --brand: oklch(0.5506 0.2129 24.45);
+  --brand-foreground: oklch(1 0 0);
+  --brand-muted: oklch(0.9505 0.0325 24.45);
+  --ink: oklch(0.145 0 0);
 }
 
 .dark {
@@ -113,15 +123,75 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --brand: oklch(0.6274 0.2133 24.45);
+  --brand-foreground: oklch(1 0 0);
+  --brand-muted: oklch(0.2891 0.0832 24.45);
+  --ink: oklch(0.985 0 0);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    /* The navbar is position:fixed and grows to 90px tall. Reserve that space
+       so in-page anchors and `#`-links are not hidden underneath it. */
+    scroll-padding-top: 6rem;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     @apply bg-background text-foreground;
+    /* Avoids the horizontal jump when a page grows past the viewport height. */
+    scrollbar-gutter: stable;
+    text-rendering: optimizeLegibility;
   }
+
+  /* --- Selection --- */
+  ::selection {
+    @apply bg-[#d11a2a]/20 text-foreground;
+  }
+
+  /* --- Accessible focus ring for keyboard users only --- */
+  :focus-visible {
+    @apply outline-ring/70 outline-2 outline-offset-2;
+  }
+
+  /* --- Scrollbar, tuned to the dark surfaces used across the site --- */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--foreground) 25%, transparent)
+      transparent;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full border-[3px] border-solid border-transparent bg-current/25 bg-clip-content;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-current/40 bg-clip-content;
+  }
+
+  /* --- Honour the OS "reduce motion" setting. This site animates heavily
+     (framer-motion + CSS transitions), so without this some visitors get
+     motion sickness. --- */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   .leaflet-container {
     @apply !bg-card !font-[inherit];
   }

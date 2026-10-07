@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Zap, ArrowRight, Sparkles } from "lucide-react";
 import Link from "next/link";
@@ -74,7 +75,7 @@ export default function HomePopup() {
             {/* BIG IMAGE SECTION (70% ng Height) */}
             <div className="h-[400px] bg-gray-50 relative group overflow-hidden border-b-[3px] border-black">
               {config.imageUrl ? (
-                <img 
+                <SmartImage 
                   src={config.imageUrl} 
                   alt="Product Highlight" 
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 

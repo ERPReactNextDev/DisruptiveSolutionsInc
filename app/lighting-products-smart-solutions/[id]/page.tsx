@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
@@ -260,7 +261,7 @@ export default function ProductDetails() {
                     className={`relative w-20 h-20 flex-shrink-0 rounded-xl border-2 transition-all overflow-hidden bg-gray-50 ${activeImage === img ? "border-[#d11a2a] scale-95 shadow-lg" : "border-transparent opacity-60 hover:opacity-100"
                       }`}
                   >
-                    <img src={img as string} className="w-full h-full object-cover" alt={`Thumb ${idx}`} />
+                    <SmartImage src={img as string} className="w-full h-full object-cover" alt={`Thumb ${idx}`} />
                   </button>
                 ))}
               </div>
@@ -293,13 +294,19 @@ export default function ProductDetails() {
 
               {/* TECHNICAL SPECS TABLE */}
               <div className="space-y-6">
-                {product.technicalSpecs?.map((specGroup: any) => (
-                  <div key={specGroup.id} className="space-y-3">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#d11a2a]">{specGroup.label}</h3>
+                {product.technicalSpecs?.map((specGroup: any, groupIdx: number) => {
+                  // Support both .specs (some imported products) and .rows (standard)
+                  const rows = specGroup.specs || specGroup.rows || [];
+                  if (rows.length === 0) return null;
+                  return (
+                  <div key={specGroup.id ?? groupIdx} className="space-y-3">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-[#d11a2a]">
+                      {specGroup.label || specGroup.specGroup || "Specifications"}
+                    </h3>
                     <div className="border border-gray-100 rounded-xl overflow-hidden shadow-sm">
                       <table className="w-full border-collapse bg-white text-left">
                         <tbody>
-                          {specGroup.rows?.map((row: any, idx: number) => (
+                          {rows.map((row: any, idx: number) => (
                             <tr key={idx} className="border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
                               <td className="w-2/5 p-3 md:p-3.5 bg-gray-50/30 text-[9px] md:text-[10px] font-bold text-gray-400 uppercase border-r border-gray-50 italic">{row.name}</td>
                               <td className="p-3 md:p-3.5 text-[10px] md:text-[12px] font-semibold text-gray-700 uppercase">{row.value || "—"}</td>
@@ -309,7 +316,8 @@ export default function ProductDetails() {
                       </table>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* ACTION BUTTONS & CATALOGS */}
@@ -454,7 +462,6 @@ export default function ProductDetails() {
                 <SwiperSlide key={item.id}>
                   <Link
                     href={`/lighting-products-smart-solutions/${item.id}`}
-                    onClick={() => logActivity(`Clicked Related Product: ${item.name}`, { fromProductId: id })}
                     className="group block h-full"
                   >
                     <div className="bg-gray-50 rounded-[24px] p-6 border border-transparent group-hover:border-gray-200 group-hover:bg-white transition-all duration-300 h-full flex flex-col">

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useEffect, useState, useMemo } from "react";
 import { 
   Pencil, 
@@ -454,7 +455,7 @@ const uniqueWebsites = useMemo(() => {
                   {/* MAIN IMAGE */}
                   <TableCell className="py-4">
                     <div className="w-14 h-14 bg-white rounded-2xl p-1 border border-gray-100 shadow-sm overflow-hidden group-hover:scale-105 transition-transform">
-                      <img src={product.mainImage} alt="" className="w-full h-full object-contain" />
+                      <SmartImage src={product.mainImage} alt="" className="w-full h-full object-contain" />
                     </div>
                   </TableCell>
 

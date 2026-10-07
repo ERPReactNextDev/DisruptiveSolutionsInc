@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
@@ -325,7 +326,7 @@ useEffect(() => {
                     className={`relative w-20 h-20 flex-shrink-0 rounded-xl border-2 transition-all overflow-hidden bg-gray-50 ${activeImage === img ? "border-[#d11a2a] scale-95 shadow-lg" : "border-transparent opacity-60 hover:opacity-100"
                       }`}
                   >
-                    <img src={img as string} className="w-full h-full object-cover" alt={`Thumb ${idx}`} />
+                    <SmartImage src={img as string} className="w-full h-full object-cover" alt={`Thumb ${idx}`} />
                   </button>
                 ))}
               </div>

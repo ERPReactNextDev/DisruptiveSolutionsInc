@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, Plus, ChevronRight, Star } from "lucide-react";
@@ -14,6 +15,9 @@ interface HighlightsProps {
 export default function Highlights({ products, addToQuote, quoteCart }: HighlightsProps) {
     // Kunin ang Top 5 products
     const topProducts = products.slice(0, 5);
+
+    // Track which card has its specs overlay expanded via click
+    const [expandedId, setExpandedId] = useState<string | null>(null);
 
     if (topProducts.length === 0) {
         return (
@@ -59,25 +63,28 @@ export default function Highlights({ products, addToQuote, quoteCart }: Highligh
 
                             <Link href={`/lighting-products-smart-solutions/${product.id}`} className="flex-1">
                                 <div className={`relative w-full ${isLarge ? "h-64 md:h-[450px]" : "h-48"} bg-[#f9f9f9] p-8 flex items-center justify-center overflow-hidden`}>
-                                    <img
+                                    <SmartImage
                                         src={product.mainImage}
                                         alt={product.name}
                                         className="max-w-[80%] max-h-[80%] object-contain group-hover/card:scale-110 group-hover/card:blur-[3px] transition-all duration-1000"
                                     />
 
-                                    {/* Specs Overlay (Kopya sa BrandsPage mo) */}
-                                    <motion.div
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        className="absolute inset-0 bg-black/80 backdrop-blur-[4px] flex flex-col justify-center items-center p-6 opacity-0 group-hover/card:opacity-100 transition-all duration-500 z-30"
+                                    {/* Specs Overlay — visible on hover (desktop) or click/tap */}
+                                    <div
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setExpandedId(expandedId === product.id ? null : product.id);
+                                        }}
+                                        className={`absolute inset-0 bg-black/80 backdrop-blur-[4px] flex flex-col justify-center items-center p-6 transition-all duration-500 z-30 cursor-pointer ${
+                                            expandedId === product.id
+                                                ? "opacity-100 pointer-events-auto"
+                                                : "opacity-0 pointer-events-none group-hover/card:opacity-100 group-hover/card:pointer-events-auto"
+                                        }`}
                                     >
                                         <p className="text-[9px] font-black text-[#d11a2a] uppercase tracking-widest mb-4 italic">Quick Overview</p>
-                                        {/* Specs Overlay - FIXED KEY WARNING HERE */}
                                         <table className="w-full max-w-[250px]">
                                             <tbody className="divide-y divide-white/10">
-                                                {firstGroup?.rows?.slice(0, 4).map((row: any, i: number) => (
-                                                    // Dati: <tr>
-                                                    // Ngayon: May unique key na gamit ang index o row name
+                                                {(firstGroup?.specs || firstGroup?.rows)?.slice(0, 4).map((row: any, i: number) => (
                                                     <tr key={`spec-row-${i}`}>
                                                         <td className="py-2 text-[8px] font-bold text-gray-400 uppercase italic">
                                                             {row.name}
@@ -92,7 +99,7 @@ export default function Highlights({ products, addToQuote, quoteCart }: Highligh
                                         <div className="mt-6 flex items-center gap-2 text-white text-[8px] font-black uppercase bg-[#d11a2a] px-5 py-2 rounded-full">
                                             View Details <ChevronRight size={12} />
                                         </div>
-                                    </motion.div>
+                                    </div>
                                 </div>
                             </Link>
 

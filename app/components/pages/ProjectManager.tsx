@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import { 
   collection, 
@@ -147,7 +148,7 @@ export default function ProjectCMS() {
               <tr key={project.id} className="hover:bg-gray-50/30 transition-colors group">
                 <td className="px-8 py-6">
                   <div className="w-16 h-10 bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
-                    <img src={project.imageUrl} className="w-full h-full object-cover" alt="" />
+                    <SmartImage src={project.imageUrl} className="w-full h-full object-cover" alt="" />
                   </div>
                 </td>
                 <td className="px-8 py-6">
@@ -233,7 +234,7 @@ export default function ProjectCMS() {
                   </label>
                   <div className="relative aspect-[16/9] bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-100 flex items-center justify-center overflow-hidden hover:border-[#d11a2a] transition-all group">
                     {imagePrev ? (
-                      <img src={imagePrev} className="w-full h-full object-cover" alt="" />
+                      <SmartImage src={imagePrev} className="w-full h-full object-cover" alt="" />
                     ) : (
                       <div className="text-center text-gray-300 group-hover:text-[#d11a2a]">
                         <UploadCloud size={40} className="mx-auto mb-2" />
@@ -254,7 +255,7 @@ export default function ProjectCMS() {
                   </label>
                   <div className="relative h-40 bg-gray-50 rounded-[2rem] border-2 border-dashed border-gray-100 flex items-center justify-center overflow-hidden hover:border-[#d11a2a] transition-all group">
                     {logoPrev ? (
-                      <img src={logoPrev} className="w-32 h-32 object-contain" alt="" />
+                      <SmartImage src={logoPrev} className="w-32 h-32 object-contain" alt="" />
                     ) : (
                       <div className="text-center text-gray-300 group-hover:text-[#d11a2a]">
                         <ImageIcon size={32} className="mx-auto mb-2" />

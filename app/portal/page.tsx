@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
@@ -300,7 +301,7 @@ export default function PortalPage() {
                                 <div className="flex -space-x-3">
                                     {inq.items?.map((item: any, i: number) => (
                                         <div key={i} className="relative group/img">
-                                            <img 
+                                            <SmartImage 
                                                 src={item.image} 
                                                 className="w-12 h-12 rounded-xl bg-white p-1.5 border-2 border-[#1a1a1a] object-contain shadow-2xl transition-transform group-hover/img:scale-110" 
                                                 alt="product" 

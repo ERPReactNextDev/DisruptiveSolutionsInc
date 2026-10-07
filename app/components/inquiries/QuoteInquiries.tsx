@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import { 
     collection, query, orderBy, onSnapshot, updateDoc, 
@@ -244,7 +245,7 @@ export default function InquiriesPanel() {
                                             <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-sm transition-all">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center border border-slate-100">
-                                                        <img src={item.image} className="w-10 h-10 object-contain p-1" alt="" />
+                                                        <SmartImage src={item.image} className="w-10 h-10 object-contain p-1" alt="" />
                                                     </div>
                                                     <div className="min-w-0">
                                                         <span className="text-[11px] font-black text-slate-800 uppercase block">{item.name}</span>

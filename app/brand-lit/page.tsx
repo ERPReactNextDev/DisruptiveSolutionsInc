@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
@@ -263,10 +264,41 @@ export default function BrandLitPage() {
     window.dispatchEvent(new Event("cartUpdated"));
   };
 
+  // ── First product image per family ────────────────────────────────────
+  const firstProductImageForFamily = useCallback(
+    (family: any): string | null => {
+      const title = family.title?.trim().toUpperCase();
+      const match = products.find(
+        (p) =>
+          p.productFamily?.trim().toUpperCase() === title ||
+          p.dynamicSpecs?.some(
+            (s: any) => s.value?.trim().toUpperCase() === title,
+          ),
+      );
+      if (!match) return null;
+      // products store their primary image in mainImage (Cloudinary URL)
+      return (
+        match.mainImage ||
+        match.images?.[0]?.src ||
+        match.images?.[0] ||
+        match.imageUrl ||
+        null
+      );
+    },
+    [products],
+  );
+
   // ── Family Card (reusable) ─────────────────────────────────────────────
   const FamilyCard = ({ category }: { category: any }) => {
     const count = countForFamily(category);
+
+    // Always hide families that have no products
+    if (count === 0) return null;
+
     const slug = toSlug(category.title || "");
+    const productImg = firstProductImageForFamily(category);
+    // Use first product image if available, otherwise fall back to the family's own imageUrl
+    const displayImage = productImg || category.imageUrl || null;
 
     return (
       <Link
@@ -275,9 +307,9 @@ export default function BrandLitPage() {
       >
         {/* Image */}
         <div className="w-full aspect-square flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 group-hover:bg-white transition-colors">
-          {category.imageUrl ? (
-            <img
-              src={category.imageUrl}
+          {displayImage ? (
+            <SmartImage
+              src={displayImage}
               alt={category.title}
               className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
             />
@@ -315,7 +347,7 @@ export default function BrandLitPage() {
       {/* ── HERO ──────────────────────────────────────────────────────── */}
       <section className="relative h-[60vh] w-full flex items-center justify-center bg-black">
         <div className="absolute inset-0 opacity-40">
-          <img
+          <SmartImage
             src="/images/lit.png"
             className="w-full h-full object-cover"
             alt="LIT"
@@ -398,6 +430,13 @@ export default function BrandLitPage() {
                     {USAGE_GROUPS.map((group) => {
                       const families = groupedCategories[group];
                       if (families.length === 0) return null;
+
+                      // Hide the entire group if no family has products (respects active filters)
+                      const visibleFamilies = families.filter(
+                        (cat) => countForFamily(cat) > 0,
+                      );
+                      if (visibleFamilies.length === 0) return null;
+
                       const isOpen = openUsageGroup === group;
 
                       return (
@@ -414,7 +453,7 @@ export default function BrandLitPage() {
                           >
                             <div className="flex items-center gap-6">
                               <div className="w-28 h-28 bg-white border rounded-2xl overflow-hidden flex items-center justify-center flex-shrink-0">
-                                <img
+                                <SmartImage
                                   src={`/images/${group}.png`}
                                   alt={group}
                                   className="w-full h-full object-contain p-2"
@@ -433,8 +472,8 @@ export default function BrandLitPage() {
                                   {USAGE_GROUP_DESCRIPTIONS[group]}
                                 </p>
                                 <p className="text-[10px] font-bold text-gray-400 mt-1">
-                                  {families.length}{" "}
-                                  {families.length === 1
+                                  {visibleFamilies.length}{" "}
+                                  {visibleFamilies.length === 1
                                     ? "FAMILY"
                                     : "FAMILIES"}
                                 </p>
@@ -492,6 +531,13 @@ export default function BrandLitPage() {
                         (c) => !categorizedIds.has(c.id),
                       );
                       if (uncategorized.length === 0) return null;
+
+                      // Hide the section if no uncategorized family has products (respects active filters)
+                      const visibleUncategorized = uncategorized.filter(
+                        (cat) => countForFamily(cat) > 0,
+                      );
+                      if (visibleUncategorized.length === 0) return null;
+
                       const isOpen = openUsageGroup === ("OTHER" as any);
 
                       return (
@@ -513,7 +559,7 @@ export default function BrandLitPage() {
                                   Other Products
                                 </h3>
                                 <p className="text-[10px] font-bold text-gray-400 mt-1">
-                                  {uncategorized.length} FAMILIES
+                                  {visibleUncategorized.length} FAMILIES
                                 </p>
                               </div>
                             </div>
@@ -566,6 +612,12 @@ export default function BrandLitPage() {
                       groupedByApplication.map(({ appDoc, families }) => {
                         const isOpen = openApplicationId === appDoc.id;
 
+                        // Hide application if no family has products (respects active filters)
+                        const visibleFamilies = families.filter(
+                          (cat) => countForFamily(cat) > 0,
+                        );
+                        if (visibleFamilies.length === 0) return null;
+
                         return (
                           <div
                             key={appDoc.id}
@@ -581,7 +633,7 @@ export default function BrandLitPage() {
                               <div className="flex items-center gap-6">
                                 <div className="w-28 h-28 bg-white border rounded-2xl overflow-hidden flex items-center justify-center flex-shrink-0">
                                   {appDoc.imageUrl ? (
-                                    <img
+                                    <SmartImage
                                       src={appDoc.imageUrl}
                                       alt={appDoc.title}
                                       className="w-full h-full object-contain p-2"
@@ -600,8 +652,8 @@ export default function BrandLitPage() {
                                     </p>
                                   )}
                                   <p className="text-[10px] font-bold text-gray-400 mt-1">
-                                    {families.length}{" "}
-                                    {families.length === 1
+                                    {visibleFamilies.length}{" "}
+                                    {visibleFamilies.length === 1
                                       ? "FAMILY"
                                       : "FAMILIES"}
                                   </p>
@@ -729,7 +781,7 @@ export default function BrandLitPage() {
                       className="flex gap-4 p-4 bg-white border border-gray-100 rounded-[24px] items-center shadow-sm"
                     >
                       <div className="w-14 h-14 bg-gray-50 p-2 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <img
+                        <SmartImage
                           src={item.mainImage || "/placeholder.svg"}
                           className="max-h-full object-contain"
                           alt={item.name}

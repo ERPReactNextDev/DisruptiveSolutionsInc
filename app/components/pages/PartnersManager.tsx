@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import { 
   collection, onSnapshot, query, orderBy, where, 
@@ -183,7 +184,7 @@ export default function PartnersManager() {
               <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Logo File</label>
               <div className="relative aspect-video rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden group hover:border-[#d11a2a] transition-all cursor-pointer">
                 {(file || previewUrl) ? (
-                  <img src={file ? URL.createObjectURL(file) : previewUrl} className="w-full h-full object-contain p-4" />
+                  <SmartImage src={file ? URL.createObjectURL(file) : previewUrl} alt="Product image" className="w-full h-full object-contain p-4" />
                 ) : (
                   <div className="text-center text-gray-300">
                     <UploadCloud size={24} className="mx-auto mb-2" />
@@ -227,7 +228,7 @@ export default function PartnersManager() {
                       <button onClick={() => handleEdit(p)} className="p-2 bg-blue-50 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white"><Pencil size={12} /></button>
                       <button onClick={() => confirm("Delete logo?") && deleteDoc(doc(db, "brand_partners", p.id))} className="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-500 hover:text-white"><Trash2 size={12} /></button>
                     </div>
-                    <img src={p.logoUrl} className="h-12 w-auto object-contain mix-blend-multiply" alt={p.name} />
+                    <SmartImage src={p.logoUrl} className="h-12 w-auto object-contain mix-blend-multiply" alt={p.name} />
                     <p className="mt-3 text-[9px] font-black uppercase text-gray-400 tracking-tighter">{p.name}</p>
                   </motion.div>
                 ))}

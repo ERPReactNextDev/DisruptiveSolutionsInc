@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import {
   collection, onSnapshot, query, orderBy,
@@ -565,7 +566,7 @@ export default function BlogManager() {
       {/* PREVIEW IMAGE */}
       <td className="px-8 py-6">
         <div className="w-20 h-14 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
-          <img src={blog.coverImage} className="w-full h-full object-cover" alt="" />
+          <SmartImage src={blog.coverImage} className="w-full h-full object-cover" alt="" />
         </div>
       </td>
 
@@ -732,7 +733,7 @@ export default function BlogManager() {
 
                     {mainImagePrev && (
                       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="relative aspect-[21/9] rounded-[2.5rem] overflow-hidden shadow-2xl group">
-                        <img src={mainImagePrev} className="w-full h-full object-cover" alt="" />
+                        <SmartImage src={mainImagePrev} className="w-full h-full object-cover" alt="" />
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all" />
                       </motion.div>
                     )}
@@ -762,7 +763,7 @@ export default function BlogManager() {
                             <div className="grid md:grid-cols-2 gap-10 items-start">
                               <div className="relative aspect-square bg-white rounded-3xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden hover:border-[#d11a2a] transition-all group/img">
                                 {section.imageUrl || section.imageFile ? (
-                                  <img src={section.imageFile ? URL.createObjectURL(section.imageFile) : section.imageUrl} className="w-full h-full object-cover" alt="" />
+                                  <SmartImage src={section.imageFile ? URL.createObjectURL(section.imageFile) : section.imageUrl} className="w-full h-full object-cover" alt="" />
                                 ) : <div className="text-center space-y-2 text-gray-300 group-hover/img:text-[#d11a2a]"><ImagePlus className="mx-auto" size={40} /><span className="text-[9px] font-black uppercase tracking-widest block">Insert Image</span></div>}
                                 <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => updateSection(section.id, { imageFile: e.target.files?.[0] })} />
                               </div>
@@ -878,7 +879,7 @@ export default function BlogManager() {
                     <div className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
                       <div className="flex items-center gap-2 mb-2">
                         <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center overflow-hidden">
-                          <img
+                          <SmartImage
                             src="/images/icon.png"
                             alt="Site Icon"
                             className="w-full h-full object-contain"
@@ -912,7 +913,7 @@ export default function BlogManager() {
 
                         {mainImagePrev && (
                           <div className={`bg-slate-50 rounded-lg overflow-hidden border border-slate-100 flex-shrink-0 ${previewMode === 'mobile' ? 'w-full h-32' : 'w-24 h-24'}`}>
-                            <img src={mainImagePrev} className="w-full h-full object-cover" alt="Preview" />
+                            <SmartImage src={mainImagePrev} className="w-full h-full object-cover" alt="Preview" />
                           </div>
                         )}
                       </div>

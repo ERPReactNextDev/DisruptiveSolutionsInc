@@ -1,5 +1,6 @@
 "use client";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
@@ -42,8 +43,8 @@ export default function DisruptiveLandingPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [userSession, setUserSession] = useState<any>(null);
-  const LOGO_RED = "/disruptive.png";
-  const LOGO_WHITE = "/disruptive.png";
+  const LOGO_RED = "/images/disruptive.png";
+  const LOGO_WHITE = "/images/disruptive.png";
 
   const navLinks = [
     { name: "Home", href: "/" },
@@ -547,7 +548,7 @@ export default function DisruptiveLandingPage() {
               viewport={{ once: true }}
               className="relative rounded-[40px] overflow-hidden aspect-video shadow-2xl shadow-black/20"
             >
-              <img
+              <SmartImage
                 src="https://disruptivesolutionsinc.com/wp-content/uploads/2025/12/image-1.png"
                 className="w-full h-full object-cover"
                 alt="Architecture"
@@ -764,7 +765,7 @@ export default function DisruptiveLandingPage() {
                     className={`group relative w-full h-[400px] md:h-[460px] block rounded-[28px] overflow-hidden bg-gray-900 shadow-xl border border-gray-100 transition-all duration-500 ${isSoon ? "cursor-not-allowed" : "cursor-pointer"}`}
                   >
                     <div className="absolute inset-0 overflow-hidden">
-                      <img
+                      <SmartImage
                         src={brand.image}
                         alt={brand.title}
                         className={`w-full h-full object-cover transition-transform duration-1000 ${isSoon ? "brightness-[0.3] grayscale group-hover:grayscale-0 group-hover:scale-110" : "brightness-[0.6] group-hover:scale-110 group-hover:brightness-[0.4]"}`}

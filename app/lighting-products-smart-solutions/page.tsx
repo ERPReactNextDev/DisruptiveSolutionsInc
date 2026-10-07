@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
@@ -213,7 +214,7 @@ export default function BrandsPage() {
 <section className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden">
   {/* Tinanggal ang opacity-40 para full color ang image */}
   <div className="absolute inset-0">
-    <img 
+    <SmartImage 
       src="https://disruptivesolutionsinc.com/wp-content/uploads/2025/11/ZUMTOBELs.png" 
       className="w-full h-full object-cover" 
       alt="Hero" 
@@ -283,7 +284,7 @@ export default function BrandsPage() {
   {/* NILAKIHAN ANG CONTAINER: Mula w-14 naging w-20/24 */}
   <div className="w-16 h-16 md:w-24 md:h-24 bg-white border border-gray-200 flex items-center justify-center shrink-0 overflow-hidden rounded-xl shadow-md transition-transform duration-500 group-hover:scale-105">
     {category.imageUrl ? (
-      <img
+      <SmartImage
         src={category.imageUrl}
         className="w-full h-full object-cover" // Kung gusto mong hindi maputol ang image, gamitin ang 'object-contain' at dagdagan ng p-2
         alt={category.title}
@@ -351,7 +352,7 @@ export default function BrandsPage() {
       <Link href={`/lighting-products-smart-solutions/${product.id}`}>
         <div className="relative h-64 sm:h-72 md:h-80 w-full bg-[#fcfcfc] p-2 flex items-center justify-center overflow-hidden">
           
-          <img 
+          <SmartImage 
             src={product.mainImage} 
             className="max-w-[95%] max-h-[95%] object-contain group-hover/card:scale-105 group-hover/card:blur-[4px] transition-all duration-700" 
             alt={product.name} 
@@ -530,7 +531,7 @@ export default function BrandsPage() {
                     <div key={item.id} className="flex gap-4 p-4 bg-white border border-gray-100 rounded-[28px] items-center shadow-sm">
                       {/* Product Image */}
                       <div className="w-16 h-16 bg-gray-50 p-2 rounded-xl flex items-center justify-center shrink-0">
-                        <img src={item.mainImage} className="max-h-full object-contain" alt={item.name} />
+                        <SmartImage src={item.mainImage} className="max-h-full object-contain" alt={item.name} />
                       </div>
 
                       {/* Product Name & Controls */}

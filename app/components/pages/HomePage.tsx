@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { 
@@ -62,7 +63,7 @@ export default function CMSAdmin() {
         ...config,
         lastUpdated: serverTimestamp(),
       }, { merge: true });
-      alert("Popup Config Synchronized! ⚡");
+      alert("Popup Config Synchronized! âš¡");
     } catch (err) {
       console.error(err);
     } finally {
@@ -141,7 +142,7 @@ export default function CMSAdmin() {
               >
                 {config.imageUrl ? (
                   <>
-                    <img src={config.imageUrl} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <SmartImage src={config.imageUrl} alt="Product image" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white backdrop-blur-sm">
                       <Upload size={32} strokeWidth={3} className="mb-2" />
                       <span className="text-xs font-black uppercase tracking-widest">Replace Asset</span>
@@ -247,11 +248,11 @@ export default function CMSAdmin() {
                     >
                       <div className="aspect-square bg-gray-100 relative overflow-hidden">
                         {config.imageUrl ? (
-                          <img src={config.imageUrl} className="w-full h-full object-cover" />
+                          <SmartImage src={config.imageUrl} alt="Product image" className="w-full h-full object-cover" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-200 uppercase font-black italic text-4xl">Image</div>
                         )}
-                        <div className="absolute top-4 right-4 w-8 h-8 bg-black/10 backdrop-blur-md rounded-full flex items-center justify-center text-xs">✕</div>
+                        <div className="absolute top-4 right-4 w-8 h-8 bg-black/10 backdrop-blur-md rounded-full flex items-center justify-center text-xs">âœ•</div>
                       </div>
                       <div className="p-8 text-center">
                         <h4 className="font-black uppercase italic text-2xl leading-none mb-2 tracking-tighter">

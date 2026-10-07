@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase"; 
 import { 
@@ -225,7 +226,7 @@ export default function ApplicationMaintenance() {
         <div className="flex-1">
           <h1 className="text-3xl font-black uppercase italic tracking-tighter text-slate-900">Application Maintenance</h1>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-            Sector & Solution Classification • {filteredApplications.length} of {stats.total} applications
+            Sector & Solution Classification â€¢ {filteredApplications.length} of {stats.total} applications
           </p>
         </div>
       </div>
@@ -329,7 +330,7 @@ export default function ApplicationMaintenance() {
           <form onSubmit={handleSubmit} className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-sm sticky top-6 space-y-5">
             <div className="flex items-center justify-between">
               <h2 className="text-[10px] font-black uppercase text-emerald-600 tracking-widest">
-                {editId ? "✏️ Edit Application" : "🏗️ New Application"}
+                {editId ? "âœï¸ Edit Application" : "ðŸ—ï¸ New Application"}
               </h2>
               {editId && <Button onClick={resetForm} variant="ghost" size="sm" className="h-6 text-[9px] font-black uppercase">Cancel</Button>}
             </div>
@@ -347,7 +348,7 @@ export default function ApplicationMaintenance() {
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Application Image</label>
               <div onClick={() => document.getElementById('app-img')?.click()} className="relative w-full h-44 bg-slate-50 rounded-[24px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center overflow-hidden cursor-pointer hover:border-emerald-400 transition-all">
-                {previewUrl ? <img src={previewUrl} className="w-full h-full object-cover" /> : <div className="text-slate-300 flex flex-col items-center"><ImageIcon size={32}/><span className="text-[9px] font-black uppercase mt-2">Upload Sector Image</span></div>}
+                {previewUrl ? <SmartImage src={previewUrl} alt="Product image" className="w-full h-full object-cover" /> : <div className="text-slate-300 flex flex-col items-center"><ImageIcon size={32}/><span className="text-[9px] font-black uppercase mt-2">Upload Sector Image</span></div>}
                 <input type="file" id="app-img" hidden onChange={handleImageChange} accept="image/*" />
               </div>
             </div>
@@ -391,7 +392,7 @@ export default function ApplicationMaintenance() {
               {filteredApplications.map((app) => (
                 <div key={app.id} className={`group bg-white border border-slate-100 rounded-[32px] p-4 flex flex-col md:flex-row items-center gap-6 transition-all duration-500 hover:shadow-xl ${app.isActive === false ? 'opacity-60 grayscale' : ''}`}>
                   <div className="w-full md:w-40 h-28 bg-slate-100 rounded-[24px] overflow-hidden relative shrink-0">
-                    <img src={app.imageUrl || "https://via.placeholder.com/400x300"} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <SmartImage src={app.imageUrl || "https://via.placeholder.com/400x300"} alt="Product image" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                     
                     {/* Website Badge */}
                     {app.website && (

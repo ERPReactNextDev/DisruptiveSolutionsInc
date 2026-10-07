@@ -3,6 +3,7 @@
 import React from "react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { SmartImage } from "@/components/ui/smart-image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -368,7 +369,7 @@ export function Messenger() {
                         <>
                           <div className={cn("px-3 lg:px-4 py-2.5 rounded-2xl text-sm shadow-sm relative", msg.sender === "user" ? "bg-primary text-white rounded-tr-none" : "bg-background border rounded-tl-none")}>
                             {msg.imageUrl && (
-                              <img 
+                              <SmartImage 
                                 src={msg.imageUrl || "/placeholder.svg"} 
                                 alt="Chat image" 
                                 className="rounded-lg mb-2 max-w-full cursor-zoom-in hover:brightness-105 transition"

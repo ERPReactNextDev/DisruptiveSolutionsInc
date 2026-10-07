@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { db, auth } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -20,20 +20,8 @@ import Navbar from "../components/navigation/navbar";
 import Footer from "../components/navigation/footer";
 import FloatingMenuWidget from "../components/menu-widget";
 
-// Swiper
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-
 // Icons
-import {
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Plus,
-  Loader2,
-} from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 
 // --- TYPE DEFINITION ---
 interface Brand {
@@ -48,17 +36,52 @@ interface Brand {
 
 export default function BrandsShowcase() {
   const [dynamicBrands, setDynamicBrands] = useState<Brand[]>([]);
-  const [brandProducts, setBrandProducts] = useState<any>({});
+  const [brandProducts, setBrandProducts] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
-  const [userSession, setUserSession] = useState<any>(null);
 
   // --- 1. AUTH & SESSION ---
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUserSession(user || null);
-    });
+    const unsubscribe = onAuthStateChanged(auth, () => {});
     return () => unsubscribe();
   }, []);
+
+  // --- 3. FETCH PRODUCTS ---
+  // No where clause — fetch all products and filter in-memory by p.brands[].
+  // This matches the working pattern in app/brands/page.tsx and avoids silent
+  // failures from exact-match issues on the "websites" array field.
+  const fetchProductsForBrands = async (brandsList: Brand[]) => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "products"));
+      const allProducts = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const results: Record<string, any[]> = {};
+      brandsList.forEach((brand) => {
+        const brandNameNorm = brand.title?.toString().toLowerCase().trim();
+        results[brand.id] = allProducts.filter((p: any) => {
+          // Match against p.brands[] array (primary)
+          const inBrandsArray =
+            Array.isArray(p.brands) &&
+            p.brands.some(
+              (b: any) =>
+                typeof b === "string" &&
+                b.toLowerCase().trim() === brandNameNorm,
+            );
+          // Also match against p.brand string field (legacy)
+          const inBrandField =
+            typeof p.brand === "string" &&
+            p.brand.toLowerCase().trim() === brandNameNorm;
+          return inBrandsArray || inBrandField;
+        });
+      });
+
+      setBrandProducts(results);
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    }
+  };
 
   // --- 2. FETCH BRANDS FROM DATABASE (DYNAMIC) ---
   useEffect(() => {
@@ -90,38 +113,8 @@ export default function BrandsShowcase() {
     });
 
     return () => unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // --- 3. FETCH PRODUCTS ---
-  const fetchProductsForBrands = async (brandsList: Brand[]) => {
-    try {
-      const q = query(
-        collection(db, "products"),
-        where("website", "==", "Disruptive Solutions Inc"),
-      );
-
-      const querySnapshot = await getDocs(q);
-      const allProducts = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      const results: any = {};
-
-      brandsList.forEach((brand) => {
-        const matchedProducts = allProducts.filter(
-          (p: any) =>
-            p.brand?.toString().toLowerCase().trim() ===
-            brand.title?.toString().toLowerCase().trim(),
-        );
-        results[brand.id] = matchedProducts;
-      });
-
-      setBrandProducts(results);
-    } catch (error) {
-      console.error("Fetch Error:", error);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-sans antialiased text-slate-900 overflow-x-hidden">
@@ -160,125 +153,114 @@ export default function BrandsShowcase() {
             </p>
           </div>
         ) : (
-          dynamicBrands.map((brand) => (
-            <section
-              key={brand.id}
-              className="w-full py-24 border-b border-gray-50 bg-white"
-            >
-              <div className="max-w-[1400px] mx-auto px-8 md:px-12 flex flex-col lg:flex-row gap-20 items-center">
-                {/* BRAND SIDEBAR */}
-                <div className="w-full lg:w-[400px] space-y-10 text-center lg:text-left">
-                  {/* BIGGER LOGO — no wrapper, just the image */}
-                  <img
-                    src={brand.image}
-                    alt={brand.title}
-                    className="h-32 md:h-44 w-auto object-contain mx-auto lg:mx-0"
-                  />
+          dynamicBrands.map((brand) => {
+            const products = brandProducts[brand.id];
+            // undefined = still loading | [] = resolved with 0 products | [...] = has products
 
-                  <div className="space-y-4">
-                    <h2 className="text-3xl font-black italic uppercase text-gray-900">
-                      {brand.title} SELECTION
-                    </h2>
-                    <p className="text-[13px] text-gray-500 font-bold uppercase tracking-wide leading-relaxed line-clamp-4">
-                      {brand.description}
-                    </p>
-                  </div>
+            // Hide brand sections confirmed to have 0 matching products
+            if (Array.isArray(products) && products.length === 0) return null;
 
-                  <Link
-                    href={brand.href || "#"}
-                    className="inline-flex items-center justify-between w-full md:w-auto md:min-w-[240px] px-8 py-5 bg-black text-white hover:bg-[#d11a2a] transition-all"
-                  >
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em]">
-                      View {brand.title}'s Solutions
-                    </span>
-                    <ArrowRight size={18} />
-                  </Link>
-                </div>
+            return (
+              <section
+                key={brand.id}
+                className="w-full py-24 border-b border-gray-50 bg-white"
+              >
+                <div className="max-w-[1400px] mx-auto px-8 md:px-12 flex flex-col lg:flex-row gap-20 items-start">
+                  {/* BRAND SIDEBAR */}
+                  <div className="w-full lg:w-[360px] flex-shrink-0 space-y-10 text-center lg:text-left lg:sticky lg:top-24">
+                    <SmartImage
+                      src={brand.image}
+                      alt={brand.title}
+                      className="h-32 md:h-44 w-auto object-contain mx-auto lg:mx-0"
+                      fallback={
+                        <div className="h-32 md:h-44 flex items-center justify-center mx-auto lg:mx-0 bg-gray-50 rounded-xl px-6">
+                          <span className="text-xl font-black uppercase italic text-gray-300 tracking-tight">
+                            {brand.title}
+                          </span>
+                        </div>
+                      }
+                    />
 
-                {/* PRODUCTS SLIDER */}
-                <div className="flex-1 w-full min-w-0">
-                  {brandProducts[brand.id]?.length > 0 ? (
-                    <div className="relative group">
-                      <Swiper
-                        modules={[Navigation, Autoplay]}
-                        spaceBetween={24}
-                        slidesPerView={1.2}
-                        breakpoints={{
-                          640: { slidesPerView: 2 },
-                          1024: { slidesPerView: 3 },
-                        }}
-                        autoplay={{ delay: 5000, disableOnInteraction: false }}
-                        navigation={{
-                          prevEl: `.prev-${brand.id}`,
-                          nextEl: `.next-${brand.id}`,
-                        }}
-                      >
-                        {brandProducts[brand.id]?.map((product: any) => {
-                          const productSlug = product.slug || product.id;
-                          const rawBrand = product.brand
-                            ?.toString()
-                            .toLowerCase()
-                            .trim();
-                          const brandPath =
-                            rawBrand === "lit" ? `brand-${rawBrand}` : rawBrand;
-
-                          return (
-                            <SwiperSlide key={product.id} className="pb-10">
-                              <Link href={`/${brandPath}/${productSlug}`}>
-                                <div className="bg-white rounded-3xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-500 h-full group flex flex-col border-b-4 hover:border-b-[#d11a2a]">
-                                  <div className="aspect-[4/5] bg-gray-50/50 p-8 flex items-center justify-center relative">
-                                    <img
-                                      src={product.mainImage}
-                                      alt={product.name}
-                                      className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700"
-                                    />
-                                    <div className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                      <Plus
-                                        size={16}
-                                        className="text-[#d11a2a]"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="p-8 flex-grow">
-                                    <h4 className="text-[11px] font-black uppercase text-gray-900 line-clamp-2 leading-tight">
-                                      {product.name}
-                                    </h4>
-                                    <p className="text-[9px] font-bold text-gray-400 mt-2 uppercase tracking-widest">
-                                      Brand: {product.brand}
-                                    </p>
-                                  </div>
-                                </div>
-                              </Link>
-                            </SwiperSlide>
-                          );
-                        })}
-                      </Swiper>
-
-                      {/* Custom Navigation Icons */}
-                      <div className="flex gap-4 mt-4 justify-center lg:justify-start">
-                        <button
-                          className={`prev-${brand.id} w-12 h-12 flex items-center justify-center border rounded-full hover:bg-black hover:text-white transition-all`}
-                        >
-                          <ChevronLeft size={20} />
-                        </button>
-                        <button
-                          className={`next-${brand.id} w-12 h-12 flex items-center justify-center border rounded-full hover:bg-black hover:text-white transition-all`}
-                        >
-                          <ChevronRight size={20} />
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-[400px] flex flex-col items-center justify-center border-2 border-dashed border-gray-100 rounded-[32px] bg-gray-50/30">
-                      <p className="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">
-                        No Assets Linked to {brand.title}
+                    <div className="space-y-4">
+                      <h2 className="text-3xl font-black italic uppercase text-gray-900">
+                        {brand.title} SELECTION
+                      </h2>
+                      <p className="text-[13px] text-gray-500 font-bold uppercase tracking-wide leading-relaxed line-clamp-4">
+                        {brand.description}
                       </p>
                     </div>
-                  )}
+
+                    <Link
+                      href={brand.href || "#"}
+                      className="inline-flex items-center justify-between w-full md:w-auto md:min-w-[240px] px-8 py-5 bg-black text-white hover:bg-[#d11a2a] transition-all"
+                    >
+                      <span className="text-[10px] font-black uppercase tracking-[0.4em]">
+                        View {brand.title}'s Solutions
+                      </span>
+                      <ArrowRight size={18} />
+                    </Link>
+                  </div>
+
+                  {/* PRODUCTS GRID */}
+                  <div className="flex-1 w-full min-w-0">
+                    {products === undefined ? (
+                      // Loading skeleton
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {[...Array(4)].map((_, i) => (
+                          <div key={i} className="flex flex-col items-center gap-3 py-5 px-3 rounded-2xl bg-gray-50 animate-pulse">
+                            <div className="w-full aspect-square rounded-xl bg-gray-200" />
+                            <div className="h-3 w-3/4 rounded bg-gray-200" />
+                            <div className="h-2 w-1/4 rounded bg-gray-200" />
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {products.slice(0, 8).map((product: any) => (
+                            <Link
+                              key={product.id}
+                              href={`/lighting-products-smart-solutions/${product.id}`}
+                              className="group flex flex-col items-center gap-3 py-5 px-3 rounded-2xl border border-transparent hover:border-[#d11a2a] hover:bg-white hover:shadow-lg transition-all duration-200"
+                            >
+                              <div className="w-full aspect-square flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 group-hover:bg-white transition-colors">
+                                {product.mainImage ? (
+                                  <SmartImage
+                                    src={product.mainImage}
+                                    alt={product.name}
+                                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center">
+                                    <span className="text-gray-200 text-[8px] font-bold uppercase">No Image</span>
+                                  </div>
+                                )}
+                              </div>
+                              <p className="text-[9px] font-black uppercase italic text-center leading-tight text-gray-700 group-hover:text-[#d11a2a] transition-colors line-clamp-2">
+                                {product.name}
+                              </p>
+                              <ArrowRight size={10} className="text-gray-300 group-hover:text-[#d11a2a] group-hover:translate-x-0.5 transition-all" />
+                            </Link>
+                          ))}
+                        </div>
+
+                        {products.length > 8 && (
+                          <div className="mt-8 flex justify-center lg:justify-start">
+                            <Link
+                              href={brand.href || "#"}
+                              className="inline-flex items-center gap-2 border border-gray-200 px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest text-gray-500 hover:border-[#d11a2a] hover:text-[#d11a2a] transition-all"
+                            >
+                              View All {products.length} Products <ArrowRight size={12} />
+                            </Link>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </section>
-          ))
+              </section>
+            );
+          })
         )}
       </main>
 
