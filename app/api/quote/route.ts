@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_EMAIL_API);
-
 // Admin email — where quote requests get sent
 const ADMIN_EMAIL = "itd@disruptivesolutionsinc.com";
 const FROM_EMAIL = "noreply@elev8solutions.cloud";
 
 export async function POST(req: Request) {
+  const resend = new Resend(process.env.RESEND_EMAIL_API);
   try {
     const body = await req.json();
     const {

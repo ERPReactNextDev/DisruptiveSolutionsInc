@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_EMAIL_API);
-
 const ADMIN_EMAIL = "admin@disruptivesolutionsinc.com";
 const FROM_EMAIL = "noreply@elev8solutions.cloud";
 
 export async function POST(req: Request) {
+  const resend = new Resend(process.env.RESEND_EMAIL_API);
   try {
     const body = await req.json();
     const { fullName, email, phone, company, message, attachmentUrl } = body;
