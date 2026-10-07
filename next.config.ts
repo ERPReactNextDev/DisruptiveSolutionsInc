@@ -1,22 +1,17 @@
 import type { NextConfig } from "next";
+import type { RemotePattern } from "next/dist/shared/lib/image-config";
 
 /**
  * Hosts allowed to be optimized by next/image.
- * Every remote image in the app comes from one of these:
- *  - Cloudinary (product/lifestyle media uploaded from the admin panel)
- *  - Firebase Storage (legacy uploads, project `taskflow-4605f`)
- *  - Unsplash (editorial imagery used on marketing pages)
- *  - Google Lighthouse / PageSpeed images
- *  - Disruptive Solutions Inc WordPress (legacy hero/marketing images)
  */
-const imageRemotePatterns = [
-  { protocol: "https", hostname: "res.cloudinary.com" },
-  { protocol: "https", hostname: "api.cloudinary.com" },
-  { protocol: "https", hostname: "firebasestorage.googleapis.com" },
-  { protocol: "https", hostname: "taskflow-4605f.firebasestorage.app" },
-  { protocol: "https", hostname: "lh3.googleusercontent.com" },
-  { protocol: "https", hostname: "images.unsplash.com" },
-  { protocol: "https", hostname: "disruptivesolutionsinc.com" },
+const imageRemotePatterns: RemotePattern[] = [
+  { protocol: "https" as const, hostname: "res.cloudinary.com" },
+  { protocol: "https" as const, hostname: "api.cloudinary.com" },
+  { protocol: "https" as const, hostname: "firebasestorage.googleapis.com" },
+  { protocol: "https" as const, hostname: "taskflow-4605f.firebasestorage.app" },
+  { protocol: "https" as const, hostname: "lh3.googleusercontent.com" },
+  { protocol: "https" as const, hostname: "images.unsplash.com" },
+  { protocol: "https" as const, hostname: "disruptivesolutionsinc.com" },
 ];
 
 const securityHeaders = [
